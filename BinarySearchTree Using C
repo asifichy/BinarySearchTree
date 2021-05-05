@@ -1,0 +1,244 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+struct treeNode
+{
+    int data;
+    struct treeNode *left;
+    struct treeNode *right;
+};
+
+struct treeNode *creatingNode(int data)
+{
+    struct treeNode *temp;
+    temp = (struct treeNode *)malloc(sizeof(struct treeNode));
+    temp->data = data;
+    temp->left = NULL;
+    temp->right = NULL;
+    return temp;
+};
+
+struct treeNode *insertion(struct treeNode *root, int data)
+{
+    if(root == NULL)
+    {
+        return creatingNode(data);
+    }
+    if(data < root->data)
+    {
+        root->left = insertion(root->left, data);
+    }
+    if(data > root->data)
+    {
+        root->right = insertion(root->right, data);
+    }
+    return root;
+}
+
+void inorder(struct treeNode *root)
+{
+    if(root == NULL)
+    {
+        return;
+    }
+    inorder(root->left);
+    printf("%d ", root->data);
+    inorder(root->right);
+}
+
+void preorder(struct treeNode *root)
+{
+    if(root == NULL)
+    {
+        return;
+    }
+    printf("%d ", root->data);
+    preorder(root->left);
+    preorder(root->right);
+}
+
+void postorder(struct treeNode *root)
+{
+    if(root == NULL)
+    {
+        return;
+    }
+    postorder(root->left);
+    postorder(root->right);
+    printf("%d ", root->data);
+}
+
+struct treeNode *searchNode(struct treeNode *root, int data)
+{
+    if(root == NULL || root->data == data)
+    {
+        return root;
+    }
+    if(root->data < data)
+    {
+        return searchNode(root->data, data);
+    }
+    if(root->data > data)
+    {
+        return searchNode(root->data, data);
+    }
+}
+
+struct treeNode *findMin(struct treeNode *root)
+{
+    if(root == NULL)
+    {
+        return NULL;
+    }
+    if(root->left)
+    {
+        return findMin(root->left);
+    }
+    else
+    {
+        return root;
+    }
+}
+
+struct treeNode *findMax(struct treeNode *root)
+{
+    if(root == NULL)
+    {
+        return NULL;
+    }
+    if(root->right)
+    {
+        return findMax(root->right);
+    }
+    else
+    {
+        return root;
+    }
+}
+
+struct treeNode *deleteNode(struct treeNode *root, int data)
+{
+    struct treeNode *temp;
+    if(root == NULL)
+    {
+        printf("\nNot Found!\n");
+    }
+    else if(data < root->data)
+    {
+        root->left = deleteNode(root->left, data);
+    }
+    else if(data > root->data)
+    {
+        root->right = deleteNode(root->right, data);
+    }
+    else
+    {
+        if(root->left && root->right)
+        {
+            temp = findMin(root->right);
+            root->data = temp->data;
+            root->right = deleteNode(root->right, temp->data);
+        }
+        else
+        {
+            temp = root;
+            if(root->left == NULL)
+            {
+                root = root->right;
+            }
+            else if(root->right == NULL)
+            {
+                root = root->left;
+            }
+        }
+    }
+    return root;
+}
+
+
+int main()
+{
+    int data, choice;
+    struct treeNode *root = NULL, *temp;
+
+    while(1)
+    {
+        printf("-------------------------------------------------------------------\n");
+        printf("                    WELCOME TO BINARY SEARCH TREE                  \n");
+        printf("-------------------------------------------------------------------\n");
+        printf("1. Insertion\n");
+        printf("2. InOrder Traversal\n");
+        printf("3. PreOrder Traversal\n");
+        printf("4. PostOrder Traversal\n");
+        printf("5. Search A Node\n");
+        printf("6. Find Min Value\n");
+        printf("7. Find Max Value\n");
+        printf("8. Delete\n");
+        printf("0. Exit!!!\n");
+        printf("-------------------------------------------------------------------\n");
+
+        printf("\nEnter Your choice: ");
+        scanf("%d", &choice);
+
+        switch(choice)
+        {
+            case 1:
+                printf("\nEnter data: ");
+                scanf("%d", &data);
+                root = insertion(root, data);
+                break;
+
+            case 2:
+                inorder(root);
+                printf("\nThe nodes are in InOrder Traversal!\n");
+                break;
+
+            case 3:
+                preorder(root);
+                printf("\nThe nodes are in PreOrder traversal!\n");
+                break;
+
+            case 4:
+                postorder(root);
+                printf("\nThe nodes are in PostOrder Traversal!\n");
+                break;
+
+            case 5:
+                printf("\nEnter data for searching: ");
+                scanf("%d", &data);
+                temp = searchNode(root, data);
+                if(temp == NULL)
+                {
+                    printf("\nSearch is incomplete!!!\n");
+                }
+                else
+                {
+                    printf("\nSearch is complete!!!\n");
+                }
+                break;
+
+            case 6:
+                printf("Min Value: %d\n", findMin(root)->data);
+                break;
+
+            case 7:
+                printf("Max Value:  %d\n", findMax(root)->data);
+                break;
+
+            case 8:
+                printf("\nEnter data for delete: ");
+                scanf("%d", &data);
+                root = deleteNode(root, data);
+                break;
+
+            case 9:
+                printf("\nExited from the program\n!!!");
+                exit(0);
+
+            default:
+                printf("\nInvalid choice! Try again!!!\n");
+                break;
+        }
+    }
+    return 0;
+}
